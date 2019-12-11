@@ -1,5 +1,7 @@
 package model
 
+import "fmt"
+
 type ContactsRepository interface {
 	Save(Contact) (Contact, error)
 	ListAll() ([]Contact, error)
@@ -18,4 +20,8 @@ type Contact struct {
 
 	Phone string `json:"phone"`
 	Email string `json:"email"`
+}
+
+func (c Contact) String() string {
+	return fmt.Sprintf("Contact:\n\tID - %d\n\tFirst Name - %q\n\tLast Name - %q\n\tPhone - %q\n\tEmail - %q\n", c.ID, c.FirstName, c.LastName, c.Phone, c.Email)
 }

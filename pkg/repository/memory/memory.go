@@ -6,13 +6,12 @@ import (
 	"sync"
 
 	"github.com/burov/task_databases/pkg/model"
-
 )
 
 type ContactsRepositoryInMemory struct {
 	sync.RWMutex
 	storage map[uint]model.Contact
-	lastID uint
+	lastID  uint
 }
 
 func NewContactsRepositoryInMemory() *ContactsRepositoryInMemory {
@@ -46,7 +45,7 @@ func (r *ContactsRepositoryInMemory) ListAll() ([]model.Contact, error) {
 	r.RLock()
 	defer r.RUnlock()
 
-	result := make([]model.Contact, len(r.storage))
+	result := make([]model.Contact, 0, len(r.storage))
 	for _, c := range r.storage {
 		result = append(result, c)
 	}
@@ -79,7 +78,7 @@ func (r *ContactsRepositoryInMemory) GetByPhone(phone string) (model.Contact, er
 	return model.Contact{}, fmt.Errorf("record not found")
 }
 
-func (r *ContactsRepositoryInMemory)GetByEmail(email string) (model.Contact, error) {
+func (r *ContactsRepositoryInMemory) GetByEmail(email string) (model.Contact, error) {
 	r.RLock()
 	defer r.RUnlock()
 
@@ -98,15 +97,13 @@ func (r *ContactsRepositoryInMemory) SearchByName(n string) ([]model.Contact, er
 
 	result := make([]model.Contact, len(r.storage))
 	for _, c := range r.storage {
-		if strings.HasPrefix(c.FirstName,  n) || strings.HasPrefix(c.LastName, n) {
+		if strings.HasPrefix(c.FirstName, n) || strings.HasPrefix(c.LastName, n) {
 			result = append(result, c)
 		}
 	}
 
 	return result, nil
 }
-
-
 
 func (r *ContactsRepositoryInMemory) Delete(id uint) error {
 	r.Lock()
