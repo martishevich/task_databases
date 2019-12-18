@@ -1,11 +1,12 @@
 package main
 
 import (
+	"database/sql"
 	"fmt"
-	"log"
-
 	"github.com/burov/task_databases/pkg/model"
-	"github.com/burov/task_databases/pkg/repository/memory"
+	rep "github.com/burov/task_databases/pkg/repository/postgres"
+	_ "github.com/lib/pq"
+	"log"
 )
 
 const (
@@ -19,7 +20,12 @@ const (
 )
 
 func main() {
-	repository := memory.NewContactsRepositoryInMemory()
+	connection, err := sql.Open("postgres", "user=postgres password=example dbname=golang sslmode=disable")
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	repository := rep.NewContactsRepositoryPostgreSQL(connection)
 
 	for {
 		fmt.Print(menu)
